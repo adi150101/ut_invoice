@@ -1,0 +1,251 @@
+/* ==============================
+   GLOBAL
+============================== */
+body{
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  padding: 30px;
+  margin: 0;
+  color: #333;
+}
+
+/* ==============================
+   CONTAINER
+============================== */
+.container{
+  max-width: 900px;
+  margin: auto;
+}
+
+/* ==============================
+   INVOICE WRAPPER
+============================== */
+.invoice-wrapper{
+  max-width: 750px;
+  margin: auto;
+  background: #fff;
+  padding: 40px 50px;
+  border-radius: 12px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* watermark (optional keren) */
+.invoice-wrapper::before{
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 350px;
+  height: 350px;
+  background: url("assets/logo.png") no-repeat center;
+  background-size: contain;
+  opacity: 0.03;
+  transform: translate(-50%, -50%);
+}
+
+/* ==============================
+   HEADER
+============================== */
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.logo-img{
+  width: 160px;
+  height: auto;
+}
+
+.header-text{
+  text-align: right;
+}
+
+.header-text h1{
+  font-size: 30px;
+  margin: 0;
+  border-bottom: 3px solid #2d89ff;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.header-text p{
+  margin-top: 6px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* ==============================
+   TEXT
+============================== */
+p{
+  color: #666;
+  line-height: 1.5;
+}
+
+/* ==============================
+   INFO
+============================== */
+.info{
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.info-left{
+  text-align: left;
+}
+
+.info-right{
+  text-align: right;
+}
+
+/* ==============================
+   TABLE
+============================== */
+table{
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+
+th{
+  background: #f8f8f8;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+td, th{
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+td:last-child, th:last-child{
+  text-align: right;
+}
+
+/* ==============================
+   TOTAL
+============================== */
+.total{
+  text-align: right;
+  font-size: 22px;
+  margin-top: 25px;
+  font-weight: bold;
+}
+
+/* ==============================
+   BOTTOM SECTION (FIX FINAL)
+============================== */
+.bottom-section{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 50px;
+  gap: 40px;
+  width: 100%;
+}
+
+/* kiri = QRIS */
+.bottom-left{
+  width: 50%;
+  text-align: left;
+}
+
+.qris-title{
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.qris-img{
+  width: 110px; /* 🔥 lebih kecil lagi */
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 6px;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  display: block;
+}
+
+/* kanan = signature */
+.bottom-right{
+  width: 50%;
+  display: flex;
+  justify-content: flex-end; /* 🔥 ini kunci */
+}
+
+/* isi signature */
+.signature-box{
+  text-align: center;
+  width: 180px;
+}
+
+.signature-box div:first-child{
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.signature-img{
+  width: 120px;
+  max-height: 70px;
+  object-fit: contain;
+  margin: 5px 0;
+}
+
+.signature-name{
+  font-size: 13px;
+  color: #555;
+}
+/* ==============================
+   BUTTON
+============================== */
+button{
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background: #2d89ff;
+  color: white;
+  font-weight: bold;
+}
+
+button:hover{
+  background: #1b6fe0;
+}
+
+/* ==============================
+   ACTIONS
+============================== */
+.actions{
+  margin-top: 30px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ==============================
+   PRINT MODE
+============================== */
+@media print{
+  body{
+    background: white;
+    padding: 0;
+  }
+
+  .invoice-wrapper{
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  button, .actions{
+    display: none;
+  }
+}
