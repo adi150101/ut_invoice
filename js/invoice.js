@@ -1,7 +1,7 @@
 // ==============================
 // CONFIG
 // ==============================
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1492864836307124445/VGcgVeo9JrvmP81a8zPRP4GvrfZSMNm6PYepUg6A1Fy3dpkEfocRlWXsJiCedBpfpQHd"
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1492867555117764769/UjaDLatJcrYOwxYauuxXj57XUBDcwdQmxYrDdCzE-sdP4-Cqf6lBRmPU283MdA8zxhnW"
 
 // ==============================
 // ELEMENT & DATA
