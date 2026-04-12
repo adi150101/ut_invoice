@@ -109,7 +109,7 @@ invoiceEl.innerHTML = `
 
     <!-- KIRI = QRIS -->
     <div class="bottom-left">
-      <p class="qris-title"><b>Pembayaran via QRIS</b></p>
+      <p class="qris-title"><b>TRUSTED</b></p>
       <img src="assets/qris.png" class="qris-img">
     </div>
 
