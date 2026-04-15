@@ -164,7 +164,11 @@ const sendToDiscord = async () => {
   const element = document.getElementById("invoice")
 
   try {
-    const canvas = await html2canvas(element)
+    const canvas = await html2canvas(element, {
+      scale: 4, // 🔥 SUPER HD
+      useCORS: true,
+      backgroundColor: "#ffffff"
+    })
 
     canvas.toBlob(async (blob) => {
 
@@ -182,12 +186,12 @@ const sendToDiscord = async () => {
       })
 
       if (res.ok) {
-        alert("✅ Invoice berhasil dikirim!")
+        alert("✅ Invoice HD berhasil dikirim!")
       } else {
         alert("❌ Gagal kirim (cek console)")
       }
 
-    })
+    }, "image/png", 1.0) // 🔥 kualitas max
 
   } catch (err) {
     console.error(err)
