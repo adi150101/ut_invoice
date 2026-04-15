@@ -164,20 +164,39 @@ const sendToDiscord = async () => {
   const element = document.getElementById("invoice")
 
   try {
+    // 🔥 paksa render full size (hindari scaling dari CSS)
+    const rect = element.getBoundingClientRect()
+
     const canvas = await html2canvas(element, {
-      scale: 4, // 🔥 SUPER HD
+      scale: 4,
       useCORS: true,
-      backgroundColor: "#ffffff"
+      backgroundColor: "#ffffff",
+
+      width: rect.width,
+      height: rect.height,
+
+      scrollX: 0,
+      scrollY: -window.scrollY,
+
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight
     })
 
     canvas.toBlob(async (blob) => {
-
       if (!blob) {
         alert("Gagal membuat gambar")
         return
       }
 
       const formData = new FormData()
+
+      // 🔥 tambah caption biar keren di Discord
+      formData.append("content",
+        `🧾 **INVOICE UTAMA STORE**
+👤 Client: ${data.client}
+💰 Total: ${formatRupiah(total)}`
+      )
+
       formData.append("file", blob, "invoice.png")
 
       const res = await fetch(WEBHOOK_URL, {
@@ -188,10 +207,11 @@ const sendToDiscord = async () => {
       if (res.ok) {
         alert("✅ Invoice HD berhasil dikirim!")
       } else {
+        console.error(await res.text())
         alert("❌ Gagal kirim (cek console)")
       }
 
-    }, "image/png", 1.0) // 🔥 kualitas max
+    }, "image/png", 1.0)
 
   } catch (err) {
     console.error(err)
