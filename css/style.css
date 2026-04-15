@@ -164,23 +164,25 @@ td:last-child, th:last-child{
 
 /* 🔥 QRIS SUPER SHARP */
 .qris-img{
-  width: 180px; /* 🔥 lebih besar biar detail kebaca */
-  height: 180px;
+  width: 180px;
+  aspect-ratio: 1 / 1; /* 🔥 kunci biar selalu kotak */
+
+  display: block;
+
+  /* 🔥 jaga proporsi asli */
   object-fit: contain;
 
-  /* 🔥 ANTI BLUR (yang aman) */
-  image-rendering: auto;
-  image-rendering: -webkit-optimize-contrast;
+  /* 🔥 hindari distorsi dari parent */
+  max-width: 100%;
+  height: auto;
 
   /* UI */
-  display: block;
   background: #ffffff;
   padding: 8px;
   border-radius: 12px;
   border: 1px solid #e5e5e5;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
-
 /* kanan (signature) */
 .bottom-right{
   width: 50%;
