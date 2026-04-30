@@ -1,5 +1,5 @@
 // ==============================
-// CONFIG
+// CONFIG (⚠️ Jangan expose kalau production)
 // ==============================
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1492867555117764769/UjaDLatJcrYOwxYauuxXj57XUBDcwdQmxYrDdCzE-sdP4-Cqf6lBRmPU283MdA8zxhnW"
 
@@ -25,7 +25,9 @@ if (!data || !Array.isArray(data.items) || data.items.length === 0) {
       <a href="index.html">Kembali</a>
     </div>
   `
-  throw new Error("Data invoice kosong")
+  setTimeout(() => {
+    window.location.href = "index.html"
+  }, 2000)
 }
 
 // ==============================
@@ -44,18 +46,35 @@ let total = 0
 
 const rows = data.items.map(item => {
   const price = Number(item.price) || 0
-  total += price
+  const qty = Number(item.qty) || 1
+  const subtotal = price * qty
+
+  total += subtotal
 
   return `
     <tr>
       <td>${item.name}</td>
-      <td>${formatRupiah(price)}</td>
+      <td style="text-align:center">${qty}</td>
+      <td style="text-align:right">${formatRupiah(price)}</td>
+      <td style="text-align:right">${formatRupiah(subtotal)}</td>
     </tr>
   `
 }).join("")
 
 // ==============================
-// RENDER INVOICE (FINAL PRO FIX)
+// DISCOUNT
+// ==============================
+const discountPercent = Number(data.discount) || 0
+const discountAmount = total * (discountPercent / 100)
+const finalTotal = total - discountAmount
+
+// ==============================
+// INVOICE NUMBER (FIX)
+// ==============================
+const invoiceNo = data.invoiceNo || ("INV/UTS-" + Date.now())
+
+// ==============================
+// RENDER INVOICE
 // ==============================
 invoiceEl.innerHTML = `
 <div class="invoice-wrapper">
@@ -70,7 +89,7 @@ invoiceEl.innerHTML = `
       <h1>INVOICE UTAMA STORE</h1>
       <p>
         Date: ${new Date().toLocaleDateString("id-ID")} <br>
-        Invoice No: INV-${Date.now()}
+        Invoice No: ${invoiceNo}
       </p>
     </div>
   </div>
@@ -94,26 +113,36 @@ invoiceEl.innerHTML = `
   <table>
     <tr>
       <th>Description</th>
-      <th>Amount</th>
+      <th style="text-align:center">Qty</th>
+      <th style="text-align:right">Price</th>
+      <th style="text-align:right">Amount</th>
     </tr>
     ${rows}
   </table>
 
   <!-- TOTAL -->
   <div class="total">
-    Total: ${formatRupiah(total)}
+    <div>Subtotal: ${formatRupiah(total)}</div>
+
+    ${
+      discountPercent > 0
+        ? `<div>Discount (${discountPercent}%): -${formatRupiah(discountAmount)}</div>`
+        : ""
+    }
+
+    <div class="grand-total">
+      Total: ${formatRupiah(finalTotal)}
+    </div>
   </div>
 
-  <!-- BOTTOM SECTION -->
+  <!-- BOTTOM -->
   <div class="bottom-section">
 
-    <!-- KIRI = QRIS -->
     <div class="bottom-left">
       <p class="qris-title"><b>TRUSTED</b></p>
       <img src="assets/qris.png" class="qris-img">
     </div>
 
-    <!-- KANAN = SIGNATURE -->
     <div class="bottom-right">
       <div class="signature-box">
         <div>Hormat Kami,</div>
@@ -140,7 +169,7 @@ invoiceEl.innerHTML = `
 // ==============================
 const testWebhook = async () => {
   try {
-    const res = await fetch(WEBHOOK_URL, {
+    await fetch(WEBHOOK_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -150,7 +179,7 @@ const testWebhook = async () => {
       })
     })
 
-    alert("Test berhasil! Cek Discord")
+    alert("Test berhasil!")
   } catch (err) {
     console.error(err)
     alert("Webhook gagal")
@@ -158,43 +187,27 @@ const testWebhook = async () => {
 }
 
 // ==============================
-// KIRIM PNG KE DISCORD
+// KIRIM KE DISCORD (FIX HD)
 // ==============================
 const sendToDiscord = async () => {
   const element = document.getElementById("invoice")
 
   try {
-    // 🔥 paksa render full size (hindari scaling dari CSS)
-    const rect = element.getBoundingClientRect()
-
     const canvas = await html2canvas(element, {
-      scale: 4,
+      scale: window.devicePixelRatio,
       useCORS: true,
-      backgroundColor: "#ffffff",
-
-      width: rect.width,
-      height: rect.height,
-
-      scrollX: 0,
-      scrollY: -window.scrollY,
-
-      windowWidth: document.documentElement.scrollWidth,
-      windowHeight: document.documentElement.scrollHeight
+      backgroundColor: "#ffffff"
     })
 
     canvas.toBlob(async (blob) => {
-      if (!blob) {
-        alert("Gagal membuat gambar")
-        return
-      }
+      if (!blob) return alert("Gagal membuat gambar")
 
       const formData = new FormData()
 
-      // 🔥 tambah caption biar keren di Discord
       formData.append("content",
-        `🧾 **INVOICE UTAMA STORE**
+`🧾 **INVOICE UTAMA STORE**
 👤 Client: ${data.client}
-💰 Total: ${formatRupiah(total)}`
+💰 Total: ${formatRupiah(finalTotal)}`
       )
 
       formData.append("file", blob, "invoice.png")
@@ -205,16 +218,16 @@ const sendToDiscord = async () => {
       })
 
       if (res.ok) {
-        alert("✅ Invoice HD berhasil dikirim!")
+        alert("✅ Berhasil dikirim!")
       } else {
         console.error(await res.text())
-        alert("❌ Gagal kirim (cek console)")
+        alert("❌ Gagal kirim")
       }
 
     }, "image/png", 1.0)
 
   } catch (err) {
     console.error(err)
-    alert("❌ Error kirim ke Discord")
+    alert("❌ Error kirim")
   }
 }
