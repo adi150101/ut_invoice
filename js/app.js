@@ -6,31 +6,39 @@ let items = []
 // ==============================
 // FORMAT RUPIAH
 // ==============================
-const formatRupiah = (num) => {
-  return "Rp " + Number(num || 0).toLocaleString("id-ID")
-}
+const formatRupiah = (num) =>
+  "Rp " + Number(num || 0).toLocaleString("id-ID")
 
 // ==============================
 // TAMBAH ITEM
 // ==============================
-function addItem(){
-
-  const nameInput = document.getElementById("itemName")
+function addItem() {
+  const nameInput  = document.getElementById("itemName")
   const priceInput = document.getElementById("itemPrice")
+  const qtyInput   = document.getElementById("itemQty")
 
-  const name = nameInput.value.trim()
+  const name  = nameInput.value.trim()
   const price = Number(priceInput.value)
+  const qty   = Number(qtyInput?.value) || 1
 
-  if(!name || price <= 0){
+  // VALIDASI
+  if (!name || isNaN(price) || price <= 0) {
     alert("Isi item & harga dengan benar!")
     return
   }
 
-  items.push({ name, price })
+  if (qty <= 0) {
+    alert("Qty minimal 1!")
+    return
+  }
 
-  // reset input
+  // SIMPAN DATA
+  items.push({ name, price, qty })
+
+  // RESET INPUT
   nameInput.value = ""
   priceInput.value = ""
+  if (qtyInput) qtyInput.value = 1
 
   renderItems()
 }
@@ -38,17 +46,22 @@ function addItem(){
 // ==============================
 // RENDER LIST ITEM
 // ==============================
-function renderItems(){
-
-  let total = 0
+function renderItems() {
+  let subtotal = 0
 
   const rows = items.map((item, index) => {
-    total += item.price
+    const price  = Number(item.price) || 0
+    const qty    = Number(item.qty) || 1
+    const amount = price * qty
+
+    subtotal += amount
 
     return `
       <tr>
         <td>${item.name}</td>
-        <td>${formatRupiah(item.price)}</td>
+        <td class="text-center">${qty}</td>
+        <td class="text-right">${formatRupiah(price)}</td>
+        <td class="text-right">${formatRupiah(amount)}</td>
         <td>
           <button onclick="removeItem(${index})">Hapus</button>
         </td>
@@ -57,7 +70,27 @@ function renderItems(){
   }).join("")
 
   document.getElementById("itemList").innerHTML = rows
-  document.getElementById("totalPreview").innerText = formatRupiah(total)
+
+  // ==============================
+  // DISCOUNT
+  // ==============================
+  const discountInput = document.getElementById("discount")
+  let discountPercent = Number(discountInput?.value) || 0
+
+  // BATAS 0 - 100
+  discountPercent = Math.max(0, Math.min(100, discountPercent))
+  if (discountInput) discountInput.value = discountPercent
+
+  const discountAmount = subtotal * (discountPercent / 100)
+  const finalTotal = subtotal - discountAmount
+
+  // ==============================
+  // TOTAL PREVIEW
+  // ==============================
+  document.getElementById("totalPreview").innerText =
+    discountPercent > 0
+      ? `${formatRupiah(finalTotal)} (Disc ${discountPercent}%)`
+      : formatRupiah(finalTotal)
 }
 
 // ==============================
@@ -73,8 +106,9 @@ function removeItem(index){
 // ==============================
 function goToInvoice(){
 
-  const client = document.getElementById("client").value.trim()
-  const creator = document.getElementById("creator").value
+  const discount = Number(document.getElementById("discount").value) || 0
+  const client   = document.getElementById("client").value.trim()
+  const creator  = document.getElementById("creator").value
 
   if(items.length === 0){
     alert("Tambahkan item dulu!")
@@ -88,13 +122,29 @@ function goToInvoice(){
 
   const data = {
     client,
-    creator, // 🔥 tambahan creator
-    items
+    creator,
+    items,
+    discount,
+    invoiceNo: "INV/UTS-" + Date.now()
   }
 
-  // simpan ke localStorage
   localStorage.setItem("invoiceData", JSON.stringify(data))
-
-  // pindah halaman
   window.location.href = "invoice.html"
 }
+
+// ==============================
+// UX BOOST
+// ==============================
+
+// Enter dari harga
+document.getElementById("itemPrice")?.addEventListener("keydown", (e) => {
+  if(e.key === "Enter") addItem()
+})
+
+// Enter dari qty
+document.getElementById("itemQty")?.addEventListener("keydown", (e) => {
+  if(e.key === "Enter") addItem()
+})
+
+// Auto update discount
+document.getElementById("discount")?.addEventListener("input", renderItems)
