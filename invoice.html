@@ -5,29 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invoice</title>
 
+  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
 
   <!-- html2canvas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 
 <body>
 
-  <div class="container">
+  <main class="container">
 
+    <!-- ===================== -->
     <!-- INVOICE -->
-    <div id="invoice"></div>
+    <!-- ===================== -->
+    <section id="invoice" aria-live="polite"></section>
 
-    <!-- ACTION -->
-    <div class="actions">
-      <button onclick="sendToDiscord()">Kirim ke Discord</button>
-      <button onclick="window.print()">Print</button>
-      <button onclick="testWebhook()">Test Discord</button>
-    </div>
+    <!-- ===================== -->
+    <!-- ACTIONS -->
+    <!-- ===================== -->
+    <section class="actions no-print">
+      <button type="button" onclick="sendToDiscord()">📤 Kirim ke Discord</button>
+      <button type="button" onclick="window.print()">🖨️ Print Invoice</button>
+      <button type="button" onclick="testWebhook()">🧪 Test Discord</button>
+      <button type="button" onclick="window.location.href='index.html'">🔙 Kembali</button>
+    </section>
 
-  </div>
+  </main>
 
-  <!-- SCRIPT UTAMA -->
+  <!-- SCRIPT -->
   <script src="js/invoice.js"></script>
 
 </body>
