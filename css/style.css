@@ -2,13 +2,12 @@
    GLOBAL
 ============================== */
 body{
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f5f7fb;
   padding: 30px;
   margin: 0;
   color: #333;
 
-  /* 🔥 bikin text lebih halus */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,6 +18,7 @@ body{
 .container{
   max-width: 900px;
   margin: auto;
+  padding: 10px;
 }
 
 /* ==============================
@@ -107,40 +107,84 @@ body{
 }
 
 /* ==============================
-   TABLE
+   TABLE (IMPROVED)
 ============================== */
 table{
   width: 100%;
   border-collapse: collapse;
   margin-top: 30px;
+  border-radius: 10px;
+  overflow: hidden;
+
+  /* 🔥 penting biar kolom stabil */
+  table-layout: fixed;
 }
 
+/* HEADER */
 th{
-  background: #f8f8f8;
-  text-transform: uppercase;
+  background: #f1f4f9;
   font-size: 13px;
   letter-spacing: 0.5px;
+  font-weight: 600;
+  color: #444;
 }
 
+/* CELL */
 td, th{
-  padding: 12px;
+  padding: 12px 10px;
   border-bottom: 1px solid #e5e5e5;
 }
 
-td:last-child, th:last-child{
+/* HOVER */
+tr:hover td{
+  background: #f9fbff;
+}
+
+/* ==============================
+   COLUMN ALIGNMENT (UPDATED)
+============================== */
+
+/* Description */
+th:nth-child(1), td:nth-child(1){
+  width: 50%;
+  text-align: left;
+}
+
+/* Qty */
+th:nth-child(2), td:nth-child(2){
+  width: 10%;
+  text-align: center;
+}
+
+/* Price */
+th:nth-child(3), td:nth-child(3){
+  width: 20%;
   text-align: right;
 }
+
+/* Amount (🔥 paling kanan) */
+th:nth-child(4), td:nth-child(4){
+  width: 20%;
+  text-align: right;
+  padding-right: 0; /* biar mentok kanan */
+  font-weight: 600;
+}
+
 
 /* ==============================
    TOTAL
 ============================== */
 .total{
   text-align: right;
-  font-size: 22px;
   margin-top: 25px;
-  font-weight: bold;
+  font-size: 16px;
 }
 
+.total .grand-total{
+  font-size: 24px;
+  font-weight: bold;
+  color: #2d89ff;
+}
 /* ==============================
    BOTTOM SECTION
 ============================== */
@@ -226,10 +270,17 @@ button{
   background: #2d89ff;
   color: white;
   font-weight: bold;
+  transition: all 0.2s ease;
 }
 
 button:hover{
   background: #1b6fe0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+button:active{
+  transform: scale(0.97);
 }
 
 /* ==============================
@@ -253,11 +304,72 @@ button:hover{
   }
 
   .invoice-wrapper{
-    box-shadow: none;
-    border-radius: 0;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn{
+    from{
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   button, .actions{
     display: none;
   }
 }
+
+input, select{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus{
+  border-color: #2d89ff;
+  box-shadow: 0 0 0 2px rgba(45,137,255,0.15);
+  outline: none;
+}
+
+@media (max-width: 600px){
+
+  .header{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-text{
+    text-align: left;
+  }
+
+  .info{
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bottom-section{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bottom-left, .bottom-right{
+    width: 100%;
+  }
+
+  .bottom-right{
+    justify-content: flex-start;
+  }
+
+  .qris-img{
+    width: 140px;
+  }
+}
+
